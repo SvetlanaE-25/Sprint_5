@@ -27,6 +27,57 @@ def driver():
     browser.quit()
 
 @pytest.fixture
+def login_through_account_button(driver):
+    """Фикстура для входа через кнопку "Войти в аккаунт" на главной странице"""
+    driver.get(main_site)
+    driver.find_element(*Locators.MAIN_PAGE_LOGIN_BUTTON).click()
+    
+    driver.find_element(*Locators.EMAIL_FIELD).send_keys(Credentials.email)
+    driver.find_element(*Locators.PASSWORD_FIELD).send_keys(Credentials.password)
+    driver.find_element(*Locators.LOGIN_BUTTON).click()
+    
+    WebDriverWait(driver, 3).until(EC.visibility_of_element_located(Locators.ORDER_BUTTON))
+    return driver
+
+
+@pytest.fixture
+def login_through_personal_account(driver):
+    """Фикстура для входа через Личный кабинет"""
+    driver.get(main_site)
+    driver.find_element(*Locators.PERSONAL_ACCOUNT).click()
+    
+    driver.find_element(*Locators.EMAIL_FIELD).send_keys(Credentials.email)
+    driver.find_element(*Locators.PASSWORD_FIELD).send_keys(Credentials.password)
+    driver.find_element(*Locators.LOGIN_BUTTON).click()
+    
+    WebDriverWait(driver, 3).until(EC.visibility_of_element_located(Locators.ORDER_BUTTON))
+    return driver
+
+
+@pytest.fixture
+def login_through_registration(driver):
+    """Фикстура для входа через форму регистрации"""
+    driver.get(register_page)
+    driver.find_element(*Locators.LOGIN_LINK).click()
+    
+    driver.find_element(*Locators.EMAIL_FIELD).send_keys(Credentials.email)
+    driver.find_element(*Locators.PASSWORD_FIELD).send_keys(Credentials.password)
+    driver.find_element(*Locators.LOGIN_BUTTON).click()
+    
+    WebDriverWait(driver, 3).until(EC.visibility_of_element_located(Locators.ORDER_BUTTON))
+    return driver
+
+
+@pytest.fixture
+def navigate_to_password_recovery_form(driver):
+    """Фикстура только для навигации на страницу восстановления пароля"""
+    driver.get(login_page)
+    driver.find_element(*Locators.PASSWORD_RECOVERY_LINK).click()
+    WebDriverWait(driver, 3).until(EC.visibility_of_element_located(Locators.FORGOT_PASSWORD_PAGE))
+    return driver
+
+
+@pytest.fixture
 def login_authorized_profile(driver):
     """
     Фикстура для авторизации пользователя.
@@ -41,6 +92,7 @@ def login_authorized_profile(driver):
     WebDriverWait(driver, 5).until(EC.url_to_be(main_site))#Ожидание загрузки главной страницы
 
     return driver
+
 
 @pytest.fixture
 def authorized_user_personal_account(driver):
